@@ -1,0 +1,21 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: admin
+  password: password123
+  host: localhost
+
+development:
+  <<: *default
+  database: hotwire_development
+
+test:
+  <<: *default
+  database: hotwire_test
+
+production:
+  <<: *default
+  database: hotwire_production
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
