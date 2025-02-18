@@ -24,7 +24,27 @@
   </head>
 
   <body>
+    <nav class="fixed top-0 left-0 w-full p-4 bg-gray-900 text-white flex justify-between">
+      <div>
+        <%= link_to "Home", root_path, class: "text-lg font-bold px-3" %>
+      </div>
+
+      <div>
+        <% if user_signed_in? %>
+          <span class="px-3">Welcome, <%= current_user.email %>!</span>
+          <%= link_to "Logout", destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "px-3 text-red-400" %>
+        <% else %>
+          <%= link_to "Sign Up", new_user_registration_path, class: "px-3" %> |
+          <%= link_to "Login", new_user_session_path, class: "px-3" %>
+        <% end %>
+      </div>
+    </nav>
+
     <main class="container mx-auto mt-28 px-5 flex">
+      <%= turbo_stream_from "flash" %>
+      <%= turbo_stream.prepend "flash", partial: "shared/flash" %>
+      <%= render "shared/flash" %>
+
       <%= yield %>
     </main>
   </body>

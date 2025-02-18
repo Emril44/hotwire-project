@@ -70,3 +70,5 @@ end
 gem "pg", "~> 1.5"
 
 gem 'net-smtp', '~> 0.5.1'
+
+gem "devise", "~> 4.9"
