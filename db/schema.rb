@@ -10,22 +10,52 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_18_113805) do
-  create_table "test_entries", charset: "utf8mb3", force: :cascade do |t|
-    t.string "name"
+ActiveRecord::Schema[8.0].define(version: 2025_03_08_113912) do
+  create_table "task_board_users", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "task_board_id", null: false
+    t.string "role", limit: 20, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_board_id"], name: "index_task_board_users_on_task_board_id"
+    t.index ["user_id"], name: "index_task_board_users_on_user_id"
+  end
+
+  create_table "task_boards", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name", limit: 100, null: false
+    t.text "description"
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_task_boards_on_created_by_id"
+  end
+
+  create_table "tasks", charset: "utf8mb3", force: :cascade do |t|
+    t.string "title", limit: 100, null: false
+    t.text "description"
+    t.string "status", limit: 20, null: false
+    t.integer "priority"
+    t.datetime "due_date"
+    t.bigint "task_board_id", null: false
+    t.bigint "assigned_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_user_id"], name: "index_tasks_on_assigned_user_id"
+    t.index ["task_board_id"], name: "index_tasks_on_task_board_id"
+  end
+
+  create_table "users", charset: "utf8mb3", force: :cascade do |t|
+    t.string "username", limit: 50, null: false
+    t.string "email", limit: 100, null: false
+    t.string "password_digest", null: false
+    t.string "role", limit: 20, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", charset: "utf8mb3", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  end
+  add_foreign_key "task_board_users", "task_boards"
+  add_foreign_key "task_board_users", "users"
+  add_foreign_key "task_boards", "users", column: "created_by_id"
+  add_foreign_key "tasks", "task_boards"
+  add_foreign_key "tasks", "users", column: "assigned_user_id"
 end
